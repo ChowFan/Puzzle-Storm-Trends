@@ -47,6 +47,7 @@ df["Best run of day"] = pd.to_datetime(df["Best run of day"])
 # Strip '%' or 's' to turn the column into one of numeric dtype
 df_objs = df.select_dtypes("object")
 df[df_objs.columns] = df_objs.applymap(lambda x: x[:-1]).apply(pd.to_numeric)
+df = df.rename(columns={"Best run of day": "Date", "Time": "Time Spent"})
 
 # print(df.info())
 
@@ -56,17 +57,23 @@ axs = [[0 for i in range(4)] for i in range(2)]
 for row in range(2):
     for col in range(4):
         ax = fig.add_subplot(spec[row, col])
-        ax.xaxis.set_major_locator(md.YearLocator())
         axs[row][col] = ax
 
 axs[1][1].set_subplotspec(spec[1, 1:3])
 fig.delaxes(axs[1][2])
 
-sns.scatterplot(x="Best run of day", y="Highest solved", data=df, ax=axs[0][0])
-sns.scatterplot(x="Best run of day", y="Moves", data=df, ax=axs[0][1])
-sns.scatterplot(x="Best run of day", y="Accuracy", data=df, ax=axs[0][2])
-sns.scatterplot(x="Best run of day", y="Combo", data=df, ax=axs[0][3])
-sns.scatterplot(x="Best run of day", y="Time", data=df, ax=axs[1][0])
-sns.scatterplot(x="Best run of day", y="Score", data=df, ax=axs[1][1])
-sns.scatterplot(x="Best run of day", y="Runs", data=df, ax=axs[1][3])
+sns.scatterplot(x="Date", y="Highest solved", data=df, ax=axs[0][0])
+sns.scatterplot(x="Date", y="Moves", data=df, ax=axs[0][1])
+sns.scatterplot(x="Date", y="Accuracy", data=df, ax=axs[0][2])
+sns.scatterplot(x="Date", y="Combo", data=df, ax=axs[0][3])
+sns.scatterplot(x="Date", y="Time Spent", data=df, ax=axs[1][0])
+sns.scatterplot(x="Date", y="Score", data=df, ax=axs[1][1])
+sns.scatterplot(x="Date", y="Runs", data=df, ax=axs[1][3])
+
+for row, col in [(x, y) for x in range(2) for y in range(4) if not (x == 1 and y == 2)]:
+    ax = axs[row][col]
+    plt.setp(ax.get_xticklabels(), rotation=30)
+    ax.set_title(f"{ax.get_ylabel()} over Time")
+fig.suptitle(f"Lichess Puzzle Storm Progression for {username}")
+
 plt.show()
