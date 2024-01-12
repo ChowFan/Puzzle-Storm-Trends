@@ -43,7 +43,7 @@ while(next_link):
 df = pd.concat(dfs, axis=0).reset_index(drop=True)
 # Turn as many cols to numeric dtypes if possible for graphing compatibility
 df = df.apply(pd.to_numeric, errors="ignore")
-df["Best run of day"] = pd.to_datetime(df["Best run of day"])
+df["Best run of day"] = pd.to_datetime(df["Best run of day"], format="mixed")
 # Strip '%' or 's' to turn the column into one of numeric dtype
 df_objs = df.select_dtypes("object")
 df[df_objs.columns] = df_objs.applymap(lambda x: x[:-1]).apply(pd.to_numeric)
